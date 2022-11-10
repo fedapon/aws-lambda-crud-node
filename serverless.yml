@@ -1,0 +1,72 @@
+service: aws-lambda-crud-node
+frameworkVersion: "3"
+
+custom:
+    tableName: "TaskTable"
+
+provider:
+    name: aws
+    runtime: nodejs16.x
+    memorySize: 128
+    region: us-east-2
+    environment:
+        TASK_TABLE: ${self:custom.tableName}
+    iam:
+        role:
+            statements:
+                - Effect: Allow
+                  Action:
+                      - dynamodb:*
+                  Resource:
+                      - Fn::GetAtt: [TaskTable, Arn]
+
+resources:
+    Resources:
+        TaskTable:
+            Type: AWS::DynamoDB::Table
+            Properties:
+                TableName: ${self:custom.tableName}
+                BillingMode: PAY_PER_REQUEST
+                AttributeDefinitions:
+                    - AttributeName: id
+                      AttributeType: S
+                KeySchema:
+                    - AttributeName: id
+                      KeyType: HASH
+
+functions:
+    createTask:
+        #handler: src/addTask.addTask
+        handler: src/handler.addTask
+        events:
+            - httpApi:
+                  path: /tasks
+                  method: post
+    getTasks:
+        #handler: src/getTasks.getTasks
+        handler: src/handler.getTasks
+        events:
+            - httpApi:
+                  path: /tasks
+                  method: get
+    getTask:
+        #handler: src/getTask.getTask
+        handler: src/handler.getTask
+        events:
+            - httpApi:
+                  path: /tasks/{id}
+                  method: get
+    updateTask:
+        #handler: src/updateTask.updateTask
+        handler: src/handler.updateTask
+        events:
+            - httpApi:
+                  path: /tasks/{id}
+                  method: patch
+    deleteTask:
+        #handler: src/deleteTask.deleteTask
+        handler: src/handler.deleteTask
+        events:
+            - httpApi:
+                  path: /tasks/{id}
+                  method: delete
