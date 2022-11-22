@@ -1,11 +1,18 @@
 service: aws-lambda-crud-node
 frameworkVersion: "3"
 
+plugins:
+    - serverless-layers
+
 custom:
     tableName: "TaskTable"
+    serverless-layers:
+        dependenciesPath: ./package.json
 
 provider:
     name: aws
+    stage: dev
+    deploymentMethod: direct
     runtime: nodejs16.x
     memorySize: 128
     region: us-east-2
@@ -19,6 +26,8 @@ provider:
                       - dynamodb:*
                   Resource:
                       - Fn::GetAtt: [TaskTable, Arn]
+    deploymentBucket:
+        name: blackbird.ar
 
 resources:
     Resources:

@@ -5,6 +5,7 @@
         "uuid": "^9.0.0"
     },
     "devDependencies": {
-        "aws-sdk": "^2.1248.0"
+        "aws-sdk": "^2.1248.0",
+        "serverless-layers": "^2.5.4"
     }
 }
