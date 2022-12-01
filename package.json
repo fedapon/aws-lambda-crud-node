@@ -1,4 +1,7 @@
 {
+    "scripts": {
+        "lint": "eslint \"{src}/**/*.js\" --fix"
+    },
     "dependencies": {
         "@middy/core": "^3.6.2",
         "@middy/http-json-body-parser": "^3.6.2",
@@ -6,6 +9,9 @@
     },
     "devDependencies": {
         "aws-sdk": "^2.1248.0",
+        "eslint": "^8.28.0",
+        "eslint-config-prettier": "^8.5.0",
+        "eslint-plugin-prettier": "^4.2.1",
         "serverless-layers": "^2.5.4"
     }
 }

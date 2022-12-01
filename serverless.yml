@@ -19,7 +19,7 @@ provider:
     region: us-east-2
     environment:
         TASK_TABLE: ${self:custom.tableName}
-        ACCOUNT_ID: ${env:ACCOUNT_ID}
+        QUEUE_URL: ${env:QUEUE_URL}
     iam:
         role:
             statements:
@@ -50,10 +50,10 @@ resources:
                 KeySchema:
                     - AttributeName: id
                       KeyType: HASH
-        BlackbirdS3Bucket:
-            Type: AWS::S3::Bucket
-            Properties:
-                BucketName: blackbird.ar
+        # BlackbirdS3Bucket:
+        #     Type: AWS::S3::Bucket
+        #     Properties:
+        #         BucketName: blackbird.ar
         myFirstQueue:
             Type: AWS::SQS::Queue
             Properties:
@@ -61,50 +61,45 @@ resources:
 
 functions:
     createTask:
-        #handler: src/addTask.addTask
-        handler: src/handler.addTask
+        handler: src/tasks/addTask.addTask
         events:
             - httpApi:
                   path: /tasks
                   method: post
-    getTasks:
-        #handler: src/getTasks.getTasks
-        handler: src/handler.getTasks
-        events:
-            - httpApi:
-                  path: /tasks
-                  method: get
-    getTask:
-        #handler: src/getTask.getTask
-        handler: src/handler.getTask
-        events:
-            - httpApi:
-                  path: /tasks/{id}
-                  method: get
-    updateTask:
-        #handler: src/updateTask.updateTask
-        handler: src/handler.updateTask
-        events:
-            - httpApi:
-                  path: /tasks/{id}
-                  method: patch
-    deleteTask:
-        #handler: src/deleteTask.deleteTask
-        handler: src/handler.deleteTask
-        events:
-            - httpApi:
-                  path: /tasks/{id}
-                  method: delete
+    # getTasks:
+    #     handler: src/tasks/getTasks.getTasks
+    #     events:
+    #         - httpApi:
+    #               path: /tasks
+    #               method: get
+    # getTask:
+    #     handler: src/tasks/getTask.getTask
+    #     events:
+    #         - httpApi:
+    #               path: /tasks/{id}
+    #               method: get
+    # updateTask:
+    #     handler: src/tasks/updateTask.updateTask
+    #     events:
+    #         - httpApi:
+    #               path: /tasks/{id}
+    #               method: patch
+    # deleteTask:
+    #     handler: src/tasks/deleteTask.deleteTask
+    #     events:
+    #         - httpApi:
+    #               path: /tasks/{id}
+    #               method: delete
 
-    hello:
-        handler: src/handler-sqs.hello
-        events:
-            - http:
-                  path: hello
-                  method: get
+    # hello:
+    #     handler: src/sqs/handler-sqs.hello
+    #     events:
+    #         - http:
+    #               path: hello
+    #               method: get
 
-    sqsHello:
-        handler: src/handler-sqs.sqsHello
+    processSqs:
+        handler: src/sqs/processTask.processSqs
         events:
             - sqs:
                   arn:
