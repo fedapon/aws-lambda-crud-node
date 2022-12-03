@@ -1,107 +1,107 @@
 service: aws-lambda-crud-node
-frameworkVersion: "3"
+frameworkVersion: '3'
 useDotenv: true
 
 # plugins:
 #     - serverless-layers
 
 custom:
-    tableName: "TaskTable"
-    serverless-layers:
-        dependenciesPath: ./package.json
+  tableName: 'TaskTable'
+  serverless-layers:
+    dependenciesPath: ./package.json
 
 provider:
-    name: aws
-    stage: dev
-    deploymentMethod: direct
-    runtime: nodejs16.x
-    memorySize: 128
-    region: us-east-2
-    environment:
-        TASK_TABLE: ${self:custom.tableName}
-        QUEUE_URL: ${env:QUEUE_URL}
-    iam:
-        role:
-            statements:
-                - Effect: Allow
-                  Action:
-                      - dynamodb:*
-                  Resource:
-                      - Fn::GetAtt: [TaskTable, Arn]
-                - Effect: Allow
-                  Action:
-                      - sqs:SendMessage
-                  Resource:
-                      - Fn::GetAtt: [myFirstQueue, Arn]
+  name: aws
+  stage: dev
+  deploymentMethod: direct
+  runtime: nodejs16.x
+  memorySize: 128
+  region: us-east-2
+  environment:
+    TASK_TABLE: ${self:custom.tableName}
+    QUEUE_URL: ${env:QUEUE_URL}
+  iam:
+    role:
+      statements:
+        - Effect: Allow
+          Action:
+            - dynamodb:*
+          Resource:
+            - Fn::GetAtt: [TaskTable, Arn]
+        - Effect: Allow
+          Action:
+            - sqs:SendMessage
+          Resource:
+            - Fn::GetAtt: [myFirstQueue, Arn]
 
-    # deploymentBucket:
-    #     name: blackbird.ar
+  # deploymentBucket:
+  #     name: blackbird.ar
 
 resources:
-    Resources:
-        TaskTable:
-            Type: AWS::DynamoDB::Table
-            Properties:
-                TableName: ${self:custom.tableName}
-                BillingMode: PAY_PER_REQUEST
-                AttributeDefinitions:
-                    - AttributeName: id
-                      AttributeType: S
-                KeySchema:
-                    - AttributeName: id
-                      KeyType: HASH
-        # BlackbirdS3Bucket:
-        #     Type: AWS::S3::Bucket
-        #     Properties:
-        #         BucketName: blackbird.ar
-        myFirstQueue:
-            Type: AWS::SQS::Queue
-            Properties:
-                QueueName: myFirstQueue
+  Resources:
+    TaskTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${self:custom.tableName}
+        BillingMode: PAY_PER_REQUEST
+        AttributeDefinitions:
+          - AttributeName: id
+            AttributeType: S
+        KeySchema:
+          - AttributeName: id
+            KeyType: HASH
+    # BlackbirdS3Bucket:
+    #     Type: AWS::S3::Bucket
+    #     Properties:
+    #         BucketName: blackbird.ar
+    myFirstQueue:
+      Type: AWS::SQS::Queue
+      Properties:
+        QueueName: myFirstQueue
 
 functions:
-    createTask:
-        handler: src/tasks/addTask.addTask
-        events:
-            - httpApi:
-                  path: /tasks
-                  method: post
-    # getTasks:
-    #     handler: src/tasks/getTasks.getTasks
-    #     events:
-    #         - httpApi:
-    #               path: /tasks
-    #               method: get
-    # getTask:
-    #     handler: src/tasks/getTask.getTask
-    #     events:
-    #         - httpApi:
-    #               path: /tasks/{id}
-    #               method: get
-    # updateTask:
-    #     handler: src/tasks/updateTask.updateTask
-    #     events:
-    #         - httpApi:
-    #               path: /tasks/{id}
-    #               method: patch
-    # deleteTask:
-    #     handler: src/tasks/deleteTask.deleteTask
-    #     events:
-    #         - httpApi:
-    #               path: /tasks/{id}
-    #               method: delete
+  createTask:
+    handler: src/tasks/addTask.addTask
+    events:
+      - httpApi:
+          path: /tasks
+          method: post
+  # getTasks:
+  #     handler: src/tasks/getTasks.getTasks
+  #     events:
+  #         - httpApi:
+  #               path: /tasks
+  #               method: get
+  # getTask:
+  #     handler: src/tasks/getTask.getTask
+  #     events:
+  #         - httpApi:
+  #               path: /tasks/{id}
+  #               method: get
+  # updateTask:
+  #     handler: src/tasks/updateTask.updateTask
+  #     events:
+  #         - httpApi:
+  #               path: /tasks/{id}
+  #               method: patch
+  # deleteTask:
+  #     handler: src/tasks/deleteTask.deleteTask
+  #     events:
+  #         - httpApi:
+  #               path: /tasks/{id}
+  #               method: delete
 
-    # hello:
-    #     handler: src/sqs/handler-sqs.hello
-    #     events:
-    #         - http:
-    #               path: hello
-    #               method: get
+  # hello:
+  #     handler: src/sqs/handler-sqs.hello
+  #     events:
+  #         - http:
+  #               path: hello
+  #               method: get
 
-    processSqs:
-        handler: src/sqs/processTask.processSqs
-        events:
-            - sqs:
-                  arn:
-                      Fn::GetAtt: [myFirstQueue, Arn]
-                  batchSize: 1
+  processSqs:
+    handler: src/sqs/processTask.processSqs
+    events:
+      - sqs:
+          arn:
+            Fn::GetAtt: [myFirstQueue, Arn]
+          batchSize: 1

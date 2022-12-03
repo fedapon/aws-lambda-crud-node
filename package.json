@@ -1,17 +1,22 @@
 {
-    "scripts": {
-        "lint": "eslint \"{src}/**/*.js\" --fix"
-    },
-    "dependencies": {
-        "@middy/core": "^3.6.2",
-        "@middy/http-json-body-parser": "^3.6.2",
-        "uuid": "^9.0.0"
-    },
-    "devDependencies": {
-        "aws-sdk": "^2.1248.0",
-        "eslint": "^8.28.0",
-        "eslint-config-prettier": "^8.5.0",
-        "eslint-plugin-prettier": "^4.2.1",
-        "serverless-layers": "^2.5.4"
-    }
+  "scripts": {
+    "lint": "eslint  --ignore-path .gitignore .",
+    "prettify": "prettier --write --ignore-path .gitignore \"**/*.{css,html,js,json,md,yaml,yml}\""
+  },
+  "dependencies": {
+    "@middy/core": "^3.6.2",
+    "@middy/http-json-body-parser": "^3.6.2",
+    "uuid": "^9.0.0"
+  },
+  "devDependencies": {
+    "@serverless/eslint-config": "^5.0.1",
+    "aws-sdk": "^2.1248.0",
+    "eslint": "^8.29.0",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-plugin-import": "^2.26.0",
+    "eslint-plugin-prettier": "^4.2.1",
+    "git-list-updated": "^1.2.1",
+    "prettier": "^2.8.0",
+    "serverless-layers": "^2.5.4"
+  }
 }
