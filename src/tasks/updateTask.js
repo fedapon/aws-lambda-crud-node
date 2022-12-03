@@ -30,5 +30,5 @@ const updateTask = async (event) => {
 };
 
 module.exports = {
-  updateTask: middy(updateTask).use(jsonBodyParser),
+  updateTask: middy(updateTask).use(jsonBodyParser()),
 };
