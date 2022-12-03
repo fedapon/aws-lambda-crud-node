@@ -32,7 +32,7 @@ provider:
           Action:
             - sqs:SendMessage
           Resource:
-            - Fn::GetAtt: [myFirstQueue, Arn]
+            - Fn::GetAtt: [taskQueue, Arn]
 
   # deploymentBucket:
   #     name: blackbird.ar
@@ -50,14 +50,10 @@ resources:
         KeySchema:
           - AttributeName: id
             KeyType: HASH
-    # BlackbirdS3Bucket:
-    #     Type: AWS::S3::Bucket
-    #     Properties:
-    #         BucketName: blackbird.ar
-    myFirstQueue:
+    taskQueue:
       Type: AWS::SQS::Queue
       Properties:
-        QueueName: myFirstQueue
+        QueueName: taskQueue
 
 functions:
   createTask:
@@ -66,42 +62,35 @@ functions:
       - httpApi:
           path: /tasks
           method: post
-  # getTasks:
-  #     handler: src/tasks/getTasks.getTasks
-  #     events:
-  #         - httpApi:
-  #               path: /tasks
-  #               method: get
-  # getTask:
-  #     handler: src/tasks/getTask.getTask
-  #     events:
-  #         - httpApi:
-  #               path: /tasks/{id}
-  #               method: get
-  # updateTask:
-  #     handler: src/tasks/updateTask.updateTask
-  #     events:
-  #         - httpApi:
-  #               path: /tasks/{id}
-  #               method: patch
-  # deleteTask:
-  #     handler: src/tasks/deleteTask.deleteTask
-  #     events:
-  #         - httpApi:
-  #               path: /tasks/{id}
-  #               method: delete
-
-  # hello:
-  #     handler: src/sqs/handler-sqs.hello
-  #     events:
-  #         - http:
-  #               path: hello
-  #               method: get
+  getTasks:
+    handler: src/tasks/getTasks.getTasks
+    events:
+      - httpApi:
+          path: /tasks
+          method: get
+  getTask:
+    handler: src/tasks/getTask.getTask
+    events:
+      - httpApi:
+          path: /tasks/{id}
+          method: get
+  updateTask:
+    handler: src/tasks/updateTask.updateTask
+    events:
+      - httpApi:
+          path: /tasks/{id}
+          method: patch
+  deleteTask:
+    handler: src/tasks/deleteTask.deleteTask
+    events:
+      - httpApi:
+          path: /tasks/{id}
+          method: delete
 
   processSqs:
     handler: src/sqs/processTask.processSqs
     events:
       - sqs:
           arn:
-            Fn::GetAtt: [myFirstQueue, Arn]
+            Fn::GetAtt: [taskQueue, Arn]
           batchSize: 1
