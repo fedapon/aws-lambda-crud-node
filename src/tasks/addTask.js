@@ -1,7 +1,7 @@
 const { v4: uuid } = require('uuid');
 const middy = require('@middy/core');
 const jsonBodyParser = require('@middy/http-json-body-parser');
-const SQSService = require('../sqs/sendTaskToSQS');
+const SQSService = require('../sqs/sendToSQS');
 
 const addTask = async (event) => {
   const { title, description } = event.body;
@@ -17,7 +17,7 @@ const addTask = async (event) => {
   };
 
   const sqs = new SQSService();
-  const resp = await sqs.sendMessage(JSON.stringify(newTask), process.env.QUEUE_URL);
+  const resp = await sqs.sendMessage('add', newTask, process.env.QUEUE_URL);
   if (resp.message) {
     return {
       statusCode: 201,

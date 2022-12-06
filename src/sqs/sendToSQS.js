@@ -1,9 +1,15 @@
 const AWS = require('aws-sdk');
 
 class SQSService {
-  async sendMessage(MessageBody, QueueUrl) {
+  async sendMessage(cmd, payload, QueueUrl) {
+    if (!cmd || !payload || !QueueUrl) {
+      throw new Error('bad request');
+    }
     const params = {
-      MessageBody,
+      MessageBody: JSON.stringify({
+        cmd,
+        payload,
+      }),
       QueueUrl,
     };
     const sqs = new AWS.SQS();
@@ -11,6 +17,7 @@ class SQSService {
       const data = await sqs.sendMessage(params).promise();
       return { message: 'succeed', messageId: data.MessageId };
     } catch (err) {
+      console.log(err);
       return { error: err };
     }
   }
